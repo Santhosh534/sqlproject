@@ -461,7 +461,46 @@ SET balance=balance-2000
 WHERE account_no=1001;
 
 ROLLBACK;
-
+-- Display customers whose balance is between 30000 and 60000.
+SELECT c.full_name,a.balance FROM customers c INNER JOIN accounts a
+ON c.customer_id=a.customer_id WHERE a.balance BETWEEN 30000 AND 60000;
+-- Display all loan-approved customers.
+SELECT c.full_name,l.loan_status FROM customers c INNER JOIN loans l
+ON c.customer_id=l.customer_id WHERE l.loan_status='Approved';
+-- Find customers whose credit limit is above 80000.
+SELECT c.full_name,cc.credit_limit FROM customers c INNER JOIN credit_cards cc
+ON c.customer_id=cc.customer_id WHERE cc.credit_limit>80000;
+-- Find all customers who transferred amount greater than 3000.
+SELECT c.full_name,t.amount FROM customers c INNER JOIN accounts a
+ON c.customer_id=a.customer_id INNER JOIN transfers t
+ON a.account_no=t.sender_account WHERE t.amount>3000;
+-- select*from transfers;
+-- Display account details along with branch city.
+SELECT a.account_no,b.city,a.balance FROM accounts a
+INNER JOIN branches b ON a.branch_id=b.branch_id;
+-- Display total loan amount issued by each loan type.
+SELECT loan_type,SUM(loan_amount) FROM loans GROUP BY loan_type;
+-- Find accounts whose balance is below average balance.
+SELECT *FROM accounts WHERE balance<(SELECT AVG(balance)FROM accounts);
+-- Display customer names and their card expiry dates.
+SELECT c.full_name,cc.expiry_date FROM customers c
+INNER JOIN credit_cards cc ON c.customer_id=cc.customer_id;
+-- Display all transfer records in descending order of amount.
+SELECT *FROM transfers ORDER BY amount DESC;
+-- Find customers who have both Savings and Credit Card facilities.
+SELECT c.full_name FROM customers c INNER JOIN accounts a
+ON c.customer_id=a.customer_id INNER JOIN account_types at ON a.type_id=at.type_id
+INNER JOIN credit_cards cc ON c.customer_id=cc.customer_id WHERE at.type_name='Savings';
+-- Display all branches and number of accounts in each branch.
+SELECT b.branch_name,COUNT(a.account_no)FROM branches b
+INNER JOIN accounts a ON b.branch_id=a.branch_id GROUP BY b.branch_name;
+-- Find the total balance maintained in each account type.
+SELECT at.type_name,SUM(a.balance) FROM account_types at
+INNER JOIN accounts a ON at.type_id=a.type_id GROUP BY at.type_name;
+-- Find customers who performed transactions in January month
+SELECT c.full_name,t.transaction_date FROM customers c INNER JOIN accounts a
+ON c.customer_id=a.customer_id INNER JOIN transactions t
+ON a.account_no=t.account_no WHERE EXTRACT(MONTH FROM t.transaction_date)=1;
 
 
 
