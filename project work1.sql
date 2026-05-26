@@ -461,7 +461,7 @@ SET balance=balance-2000
 WHERE account_no=1001;
 
 ROLLBACK;
-t
+
 
 
 
